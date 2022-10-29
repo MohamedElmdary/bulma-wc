@@ -1,10 +1,10 @@
-import { LitElement } from "lit"
+import { LitElement, TemplateResult } from "lit"
 
 export type HostClassMap = { [key: string]: boolean }
 export type HostSlots<T extends string> = { [K in T]: Element[] }
 
 export abstract class BulmaElement<
-  T extends string = "default"
+  T extends string = "def"
 > extends LitElement {
   private readonly __slots: string[]
 
@@ -13,7 +13,7 @@ export abstract class BulmaElement<
     return [children, children.filter((child) => !child.hasAttribute("slot"))]
   }
 
-  public get slots(): HostSlots<T> {
+  public get slots(): HostSlots<"def" | T> {
     const [children, defaultSlot] = this.__defaultSlot
 
     return this.__slots.reduce(
@@ -23,11 +23,13 @@ export abstract class BulmaElement<
         )
         return slots
       },
-      { default: defaultSlot } as HostSlots<T>
+      { def: defaultSlot } as HostSlots<T>
     )
   }
 
-  constructor(slots: string[]) {
+  protected abstract get template(): TemplateResult<1>
+
+  constructor(slots: string[] = []) {
     super()
     this.__slots = slots
   }
@@ -50,4 +52,15 @@ export abstract class BulmaElement<
       }
     }
   }
+
+  protected override render(): TemplateResult<1> {
+    return this.template
+  }
+
+  public override connectedCallback(): void {
+    super.connectedCallback()
+    this.connected()
+  }
+
+  protected connected(): void {}
 }
