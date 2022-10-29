@@ -4,6 +4,7 @@ import { defineConfig } from "vite"
 export default defineConfig({
   build: {
     lib: {
+      name: "BulmaWC",
       entry: "src/public_api.ts",
       formats: ["es"],
     },

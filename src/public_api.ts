@@ -1,1 +1,1 @@
-export const NAME = "BULMA_WC"
+import { classMap } from "lit/directives/class-map.js"
